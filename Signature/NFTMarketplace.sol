@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {Test, console} from "forge-std/Test.sol";
 
 contract NFTMarketplace is Ownable {
     IERC20 public erc20Contract;
@@ -101,9 +100,7 @@ function verifySignature(
             )
         );
         address recoveredSigner = recoverSigner(digest, signature);
-        console.log("recoveredSigner",recoveredSigner);
-        console.log("signer",signer);
-
+        
         return recoveredSigner == signer;
     }
 
@@ -257,7 +254,32 @@ function verifySignature(
         return number;
     }*/
 
-    
+    function read(bytes32 slot) external  view returns(bytes32 data){
+        assembly {
+            data := sload(slot) // load from store    
+        }
+ }
+ function write(bytes32 slot,uint256 value) external {
+        assembly{
+            sstore(slot,value)
+        }
+ }
+
+
+//这里用了Ownable，so...changeSigner
+ function getSigner() external view returns (address) {
+        address result;
+        assembly {
+            result := sload(signer.slot)
+        }
+        return result;
+    }
+
+    function changeSigner(address newSigner) external onlyOwner{
+        assembly {
+            sstore(signer.slot, newSigner)
+        }
+    }
 
 
 
