@@ -39,7 +39,7 @@ contract NFTMarketplace is Ownable {
         nftContract = IERC721(nft);
 
         domain = EIP712Domain({
-            name: "SignatureTest",
+            name: "Signature",
             version: "1.0",
             verifyingContract: address(this),
             salt: bytes32(0)
